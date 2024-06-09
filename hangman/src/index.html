@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hangman Game</title>
+    <style>
+        /* CSS styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #E8EBE4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #D2D5DD;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #798071;
+            text-align: center;
+        }
+        #word-display {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        #letters {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 20px;
+            border: none;
+            background-color: #999AC6;
+            color: white;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #798071;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hangman Game</h1>
+        <div id="word-display"></div>
+        <div id="letters"></div>
+    </div>
+
+    <script>
+        // JavaScript for Hangman game
+        const words = ['hangman', 'javascript', 'programming', 'computer', 'algorithm', 'developer', 'coding'];
+
+        let chosenWord = '';
+        let guessedLetters = [];
+        let remainingAttempts = 6;
+
+        function initializeGame() {
+            // Reset game variables
+            chosenWord = words[Math.floor(Math.random() * words.length)];
+            guessedLetters = [];
+            remainingAttempts = 6;
+
+            // Display underscores for each letter in the chosen word
+            let wordDisplay = '';
+            for (let i = 0; i < chosenWord.length; i++) {
+                wordDisplay += '_ ';
+            }
+            document.getElementById('word-display').textContent = wordDisplay;
+
+            // Display alphabet buttons
+            let alphabet = 'abcdefghijklmnopqrstuvwxyz';
+            let lettersDiv = document.getElementById('letters');
+            lettersDiv.innerHTML = '';
+            for (let letter of alphabet) {
+                let button = document.createElement('button');
+                button.textContent = letter.toUpperCase();
+                button.addEventListener('click', () => guessLetter(letter));
+                lettersDiv.appendChild(button);
+            }
+        }
+
+        function guessLetter(letter) {
+            // Check if letter has already been guessed
+            if (guessedLetters.includes(letter)) return;
+
+            // Add letter to guessedLetters array
+            guessedLetters.push(letter);
+
+            // Update word display
+            let wordDisplay = '';
+            for (let char of chosenWord) {
+                if (guessedLetters.includes(char)) {
+                    wordDisplay += char + ' ';
+                } else {
+                    wordDisplay += '_ ';
+                }
+            }
+            document.getElementById('word-display').textContent = wordDisplay;
+
+            // Check if guessed word matches the chosen word
+            if (!wordDisplay.includes('_')) {
+                alert('Congratulations! You guessed the word!');
+                initializeGame();
+            }
+
+            // Decrease remaining attempts if letter is not in the chosen word
+            if (!chosenWord.includes(letter)) {
+                remainingAttempts--;
+                if (remainingAttempts === 0) {
+                    alert(`Sorry, you've run out of attempts. The word was "${chosenWord}".`);
+                    initializeGame();
+                }
+            }
+        }
+
+        // Start the game when the page loads
+        window.onload = initializeGame;
+    </script>
+</body>
+</html>
